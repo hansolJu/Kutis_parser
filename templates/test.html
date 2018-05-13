@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>등록된 학생 리스트</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <th>학범</th>
+        <th>이름</th>
+        <th>학기</th>
+        <th>주소</th>
+        <th>연락처</th>
+        <th>지도교수</th>
+    </tr>
+    {% for student in object_list %}
+        <tr>
+        <td>{{ student.hukbun }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.currentGrade }}</td>
+        <td>{{ student.address }}</td>
+        <td>{{ student.phone }}</td>
+        <td>{{ student.advisor }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
