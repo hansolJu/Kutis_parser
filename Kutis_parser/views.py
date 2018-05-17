@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import ListView
 
-from parser_core.kutis_parser import StudentInfoParser
+from parser_core.kutis_parser import *
 from parser_core.models import Student, StudentInfo
 from .forms import LoginForm
 
@@ -18,8 +18,9 @@ def login(request):
         # form으로부터 username, password값을 가져옴
         hukbun = request.POST['hukbun']
         password = request.POST['password']
-        parser = StudentInfoParser()
-        a=parser.login(hukbun, password)
+        # parser = StudentInfoParser()
+        parser2 = StudentGradePaser()
+        a=parser2.login(hukbun, password)
         print(a)
         if(a==False):
             HttpResponse('로그인 실패. 비밀번호를 확인해주세요.')
@@ -33,9 +34,10 @@ def login(request):
         # 우리 디비에 존재했을때,-----> 쿠티스 로그인후, 다시 우리디비 정보 출력
         if user:
             print('login success')
-            passingdata = parser.parse_item(parser.studentInfoUrl)
-            print(passingdata.get("hukbun"))
-            parser.save_info(passingdata.get("hukbun"),passingdata)
+
+            # parser.save_info(passingdata.get("hukbun"),passingdata)
+            passingdata = parser2.parse_item(parser2.studentgradeUrl)
+            parser2.save_info("201511868",passingdata)
 
             #return redirect('login')#출력하는 페이지로 가기.
             #중간보고서 야매 데이터 html

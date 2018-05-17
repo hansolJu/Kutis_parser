@@ -53,7 +53,7 @@ class StudentInfo(models.Model):
     # 38 취미
     # 39 특기
     # 40 혈액형
-    hukbun = models.CharField(max_length=15, unique= True)
+    hukbun = models.CharField(max_length=15, unique= True, primary_key=True)
     name = models.CharField(max_length=30, unique=True)
     jumin =models.CharField(max_length=30)
     name_Hanja =models.CharField(max_length=30, blank=True,null=True)
@@ -114,7 +114,7 @@ class StudentHopeCareers(models.Model):
 
 
 class StudentGrade(models.Model):
-    student = models.ForeignKey('StudentInfo',on_delete=models.CASCADE)
+    hukbun = models.ForeignKey(StudentInfo,on_delete=models.CASCADE)
     #이수구분
     eisu = models.CharField(max_length=50, blank=True,null=True)
     # 인증구분

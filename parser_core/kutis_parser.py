@@ -221,3 +221,86 @@ class StudentInfoParser(KutisParser):
                                   parentsPhone=infos['parentsPhone']
                                     )
         info_object.save()
+
+
+class StudentGradePaser(KutisParser):
+
+    def parse_item(self, url):
+        # 리스트로 반환
+        self.driver.get(url)
+        html = self.driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+
+        i = 0
+        infos = dict()
+
+        resultTh = []
+        resultTr = []
+        tables = soup.findAll("table", {'class': 'list06'})
+
+        for table in tables:
+            # tr로 분리
+            trs = table.findAll("tr")
+            # th와 td로 분리
+            for tr in trs:
+                ths = tr.findAll("th")
+                for th in ths:
+                    removeTag = self.remove_html_tags(str(th))
+                    resultTh.append(removeTag)
+
+                tds = tr.findAll("td")
+                resultTd = []
+                for td in tds:
+                    removeTagTd = self.remove_html_tags(str(td))
+                    removeTagTd = removeTagTd.replace('\xa0', "")
+                    removeTagTd = removeTagTd.replace('\n', "")
+                    removeTagTd = removeTagTd.replace('\t', "")
+                    removeTagTd = removeTagTd.replace('변동내역', "")
+                    resultTd.append(removeTagTd)
+                if resultTd:
+                    if '이수구분별' in resultTd[0]:
+                        findIndex = resultTr.__len__()
+                        # print(findIndex,resultTr)
+                        tmpindex = 0
+                        tmp = ''
+                        for i in range(findIndex, 0, -1):
+                            if resultTr[i - 1].__len__() == 9:
+                                tmpindex = i
+                                tmp = resultTr[i - 1][0]
+                                # print("복사할 정보",tmp,tmpindex)
+                                break
+
+                        for i in range(findIndex, tmpindex, -1):
+                            if resultTr[i - 1].__len__() == 8:
+                                resultTr[i - 1].insert(0, tmp)
+                                # print(resultTr[i-1])
+                    else:
+                        resultTr.append(resultTd)
+        # print(resultTh)
+        # print(resultTr)
+        return resultTr
+
+    def save_info(self, hukbun, infos):
+        # 리스트를 저장
+        for td in infos:
+            info_object = StudentGrade(hukbun = "201511868",
+                                       # 이수구분
+                                       eisu=td[0],
+                                       # 인증구분
+                                       certification=td[1],
+                                       # 년도학기
+                                       yearNsemester=td[2],
+                                       # 학수코드
+                                       subject_code=td[3],
+                                       # 교과목명
+                                       subject=td[4],
+                                       # 학점
+                                       score=td[5],
+                                       # 설계학점
+                                       grade_design=td[6],
+                                       # 등급
+                                       grade =td[7],
+                                       # 유효구분
+                                       valid =td[8],
+                                       )
+            info_object.save()

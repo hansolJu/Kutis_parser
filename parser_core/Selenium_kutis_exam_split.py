@@ -4,7 +4,7 @@ from selenium import webdriver
 
 
 id='201511868'
-pw='10197112'
+pw='1019711'
 
 base_url = "http://kutis.kyonggi.ac.kr/webkutis/view/indexWeb.jsp"
 login_url = "http://kutis.kyonggi.ac.kr/webkutis/view/indexWeb.jsp"
@@ -249,42 +249,62 @@ def parse_grade_item(url):
 
     i=0
     infos = dict()
-    resultTd = []
+
     resultTh= []
+    resultTr=[]
     tables = soup.findAll("table", {'class': 'list06'})
 
     for table in tables:
-        # print(type(table))
-        tds = table.findAll("td")
-        ths = table.findAll("th")
-        for th in ths:
-            removeTag = remove_html_tags(str(th))
-            resultTh.append(removeTag)
-        for td in tds:
-            removeTagTd = remove_html_tags(str(td))
-            removeTagTd = removeTagTd.replace('\xa0', "")
-            removeTagTd = removeTagTd.replace('\n', "")
-            removeTagTd = removeTagTd.replace('\t', "")
-            removeTagTd = removeTagTd.replace('변동내역', "")
-            removeTagTd = removeTagTd.replace('※ 본인인증은 개인정보 변경에서 하시기 바랍니다.', "")
-            print(removeTagTd)
-            resultTd.append(removeTagTd)
-    i=0
-    for th in resultTh:
-        print("%d" % i, th)
-        i += 1
-    i=0
-    for td in resultTd:
-        print("%d" % i, td)
-        i += 1
+        trs = table.findAll("tr")
 
-    return infos
+        for tr in trs:
+            ths = tr.findAll("th")
+            for th in ths:
+                removeTag = remove_html_tags(str(th))
+                resultTh.append(removeTag)
+
+            tds = tr.findAll("td")
+            resultTd = []
+            for td in tds:
+                removeTagTd = remove_html_tags(str(td))
+                removeTagTd = removeTagTd.replace('\xa0', "")
+                removeTagTd = removeTagTd.replace('\n', "")
+                removeTagTd = removeTagTd.replace('\t', "")
+                removeTagTd = removeTagTd.replace('변동내역', "")
+                resultTd.append(removeTagTd)
+            if resultTd:
+                if '이수구분별' in resultTd[0]:
+                    findIndex = resultTr.__len__()
+                    # print(findIndex,resultTr)
+                    tmpindex=0
+                    tmp=''
+                    for i in range(findIndex,0,-1):
+                        if resultTr[i-1].__len__() == 9:
+                            tmpindex=i
+                            tmp = resultTr[i-1][0]
+                            # print("복사할 정보",tmp,tmpindex)
+                            break
+
+                    for i in range(findIndex,tmpindex,-1):
+                        if resultTr[i-1].__len__() ==8:
+                            resultTr[i-1].insert(0,tmp)
+                            # print(resultTr[i-1])
+                else:
+                    resultTr.append(resultTd)
+    print(resultTh)
+    print(resultTr)
+
+    for td in resultTr:
+        print(td)
+
+
+    return resultTr
 
 # 기본정보 크롤
 login()
-info = parse_infos_item(studentInfoUrl)
-print(info)
-hope = parse_Hope_item(studentHopeCareersUrl)
-print(hope)
-grade = parse_infos_item(studentgradeUrl)
+# info = parse_infos_item(studentInfoUrl)
+# print(info)
+# hope = parse_Hope_item(studentHopeCareersUrl)
+# print(hope)
+grade = parse_grade_item(studentgradeUrl)
 
