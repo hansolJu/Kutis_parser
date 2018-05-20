@@ -17,7 +17,7 @@ semester = str(10)
 scheduleUrl = "http://kutis.kyonggi.ac.kr/webkutis/view/hs/wssu2/wssu222s.jsp?curPage="+page+"&hakgwa_cd=91017&gyear="+year+"&gwamok_name=&ghakgi="+semester
 subjectUrl = "http://kutis.kyonggi.ac.kr/webkutis/view/hs/wssu5/wssu511s.jsp?year=2018&hakgi=10&jojik=A1000&gwamok_no=1199&gyosu_no=20100118&gwajung=1"
 
-driverPath = 'C:/Users/hanso/Downloads/chromedriver.exe'
+driverPath = 'C:/Users/HansolJu/Downloads/chromedriver.exe'
 driver = webdriver.Chrome(driverPath)
 driver.implicitly_wait(3)
 
@@ -302,8 +302,8 @@ def parse_grade_item(url):
 
 # 기본정보 크롤
 login()
-# info = parse_infos_item(studentInfoUrl)
-# print(info)
+info = parse_infos_item(studentInfoUrl)
+print(info)
 # hope = parse_Hope_item(studentHopeCareersUrl)
 # print(hope)
 grade = parse_grade_item(studentgradeUrl)

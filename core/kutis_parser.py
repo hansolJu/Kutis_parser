@@ -2,7 +2,7 @@ import re,time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
-from parser_core.models import *
+from core.models import *
 
 
 
@@ -274,15 +274,20 @@ class StudentGradePaser(KutisParser):
                             if resultTr[i - 1].__len__() == 8:
                                 resultTr[i - 1].insert(0, tmp)
                                 # print(resultTr[i-1])
+                    elif '취득학점' in resultTd[0]:
+                        pass
                     else:
                         resultTr.append(resultTd)
         # print(resultTh)
-        # print(resultTr)
+        print(resultTr)
         return resultTr
 
     def save_info(self, hukbun, infos):
+        print (infos)
         # 리스트를 저장
+        i = 0
         for td in infos:
+            print(td)
             info_object = StudentGrade(hukbun_id = hukbun,
                                        # 이수구분
                                        eisu=td[0],
@@ -303,3 +308,4 @@ class StudentGradePaser(KutisParser):
                                        valid =td[8],
                                        )
             info_object.save()
+            i+=1
